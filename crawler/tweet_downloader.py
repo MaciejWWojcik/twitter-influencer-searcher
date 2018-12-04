@@ -1,6 +1,6 @@
 import configparser
 import oauth2
-
+import json
 
 
 
@@ -20,7 +20,36 @@ def downloadLastWeekTweets(search_query, count):
     resp, content = client.request(url, method="GET")
     return content
 
+
+def save(content, tag):
+    jsonContent = json.loads(content)
+
+    tweets = jsonContent["statuses"]
+
+    for tweet in tweets:
+        date = tweet["created_at"]
+        author = tweet["user"]["name"]
+        authorId = tweet["user"]["id"]
+        tweetId = tweet["id"]
+
+        file = open('../logs/' + tag + '_' + str(tweetId) + '_' + author + '.json', 'w+')
+
+        data = {}
+        data['author'] = author
+        data['date'] = date
+        data['authorId'] = authorId
+
+        file.write(json.dumps(data));
+        file.close()
+
 # Example of usage
 # content = downloadLastWeekTweets('tesla',50)
 # search_query is a string
 # count takes values between 1-100
+
+tag = 'tesla'
+amount = 10;
+
+content = downloadLastWeekTweets(tag,amount)
+save(content,tag)
+

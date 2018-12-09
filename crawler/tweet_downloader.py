@@ -2,6 +2,7 @@ import configparser
 import oauth2
 import json
 
+from crawler.tweet import Tweet
 
 
 def downloadLastWeekTweets(search_query, count):
@@ -23,24 +24,15 @@ def downloadLastWeekTweets(search_query, count):
 
 def save(content, tag):
     jsonContent = json.loads(content)
-
     tweets = jsonContent["statuses"]
 
     for tweet in tweets:
-        date = tweet["created_at"]
-        author = tweet["user"]["name"]
-        authorId = tweet["user"]["id"]
         tweetId = tweet["id"]
-
-        file = open('../logs/' + tag + '_' + str(tweetId) + '_' + author + '.json', 'w+')
-
-        data = {}
-        data['author'] = author
-        data['date'] = date
-        data['authorId'] = authorId
-
-        file.write(json.dumps(data));
+        file = open('../logs/' + tag + '_' + str(tweetId)  + '.json', 'w+')
+        data = Tweet(tweet)
+        file.write(json.dumps(data.toJSON()));
         file.close()
+        print(data.toJSON())
 
 # Example of usage
 # content = downloadLastWeekTweets('tesla',50)

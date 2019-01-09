@@ -3,31 +3,57 @@
         <title>Twitter Influencers Searcher</title>
         {% load static %}
         <link rel="stylesheet" href="{% static 'style.css' %}">
+        {% include 'material/includes/material_css.html' %}
+        {% include 'material/includes/material_js.html' %}
     </head>
     <body>
+        {% load material_form %}
 
-        <h1>Twitter Influencers Searcher app</h1>
-        <h5>Topic: {{ topic }}</h5>
+        <div class="topbar">Twitter Influencers Searcher app</div>
 
-        <ul>
-            {% for influencer in influencers %}
-                <li>{{ influencer.fullName }} {{ influencer.nick }}</li>
-            {% endfor %}
-        </ul>
+        <div class="container">
+            <div class="container__topics column">
 
-        <form action="{% url 'index' %}" method="POST">
-            {% csrf_token %}
-            <input type="text" name="topic" id="topic">
-            <input type="submit" value="Search">
-        </form>
+                <h5>Step 1. Select topic</h5>
 
+                <form action="{% url 'index' %}" method="POST">
+                    {% csrf_token %}
 
-        <span>Available topics</span>
-        <ul>
-            {% for topic in topics %}
-                <li>{{ topic.title }}</li>
-            {% endfor %}
-        </ul>
+                    <label>Input topic</label>
+                    <input type="text" name="topic" id="topic">
+
+                    <label>or</label>
+
+                    <label>Select topic</label>
+                    <select name="selectedTopic" class="materialSelect">
+                    <option selected="selected"></option>
+                        {% for topic in topics %}
+                            <option value="{{ topic.title }}">{{ topic.title }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" value="Search" class="btn">Search</button>
+                </form>
+
+            </div>
+            <div class="container__ranking column">
+
+                <h5>Ranking</h5>
+
+                {% if topic %}
+                <label>Topic: {{ topic }}</label>
+                <label>Tweets searched: {{ tweets }}</label>
+
+                <ul>
+                    {% for influencer in influencers %}
+                        <li>{{ influencer.fullName }} {{ influencer.nick }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+            </div>
+        </div>
+
 
     </body>
 </html>

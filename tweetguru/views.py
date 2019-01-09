@@ -13,11 +13,16 @@ def index(request):
     topic = ''
     if(request.method == 'POST'):
         topic = request.POST['topic']
+        selectedTopic = request.POST['selectedTopic']
+
+        if(len(selectedTopic)>0):
+            topic = selectedTopic
 
     context = {
         'influencers': influencers,
         'topic': topic,
-        'topics': topics
+        'topics': topics,
+        'tweets': 215214
     }
 
     return render(request, 'index.html', context)

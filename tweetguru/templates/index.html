@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>Twitter Influencers Searcher</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+    </head>
+    <body>
+
+        <h1>Twitter Influencers Searcher app</h1>
+        <h5>Topic: {{ topic }}</h5>
+
+        <ul>
+            {% for influencer in influencers %}
+                <li>{{ influencer.fullName }} {{ influencer.nick }}</li>
+            {% endfor %}
+        </ul>
+
+        <form action="{% url 'index' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="topic" id="topic">
+            <input type="submit" value="Search">
+        </form>
+
+
+        <span>Available topics</span>
+        <ul>
+            {% for topic in topics %}
+                <li>{{ topic.title }}</li>
+            {% endfor %}
+        </ul>
+
+    </body>
+</html>

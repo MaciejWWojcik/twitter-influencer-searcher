@@ -3,7 +3,9 @@ import oauth2
 
 def getTwitterRequestClient():
     config = configparser.ConfigParser()
-    config.read('../auth.ini')
+    config.read('auth.ini')
+
+    print(list(config.keys()))
     api_key = config['twitter.com']['ApiKey']
     api_secret_key = config['twitter.com']['ApiSecretKey']
     access_token = config['twitter.com']['AccessToken']

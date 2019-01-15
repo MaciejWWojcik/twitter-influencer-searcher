@@ -14,7 +14,7 @@ def load_file():
 
 
 def loadFiles():
-    logs = [f for f in os.listdir('../logs/') if os.path.isfile(os.path.join('../logs/', f))]
+    logs = [f for f in os.listdir('../logs/') if os.path.isfile(os.path.join('../tguru/logs/', f))]
 
 class DepthSearchEngine:
     tweets_count = 10

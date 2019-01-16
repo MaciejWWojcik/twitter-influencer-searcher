@@ -20,7 +20,10 @@ def get_setting(key):
     else:
         config = configparser.ConfigParser()
         config.read('auth.ini')
-        return config['twitter.com'][key]
+        if config.has_section('twitter.com'):
+            return config['twitter.com'][key]
+        else:
+            return os.environ.get(key)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -13,17 +13,6 @@ import configparser
 import os
 import django_heroku
 
-def get_setting(key):
-    current_env = os.environ.get("APP_ENV")
-    if current_env == "production":
-        return os.environ[key]
-    else:
-        config = configparser.ConfigParser()
-        config.read('auth.ini')
-        if config.has_section('twitter.com'):
-            return config['twitter.com'][key]
-        else:
-            return os.environ.get(key)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -134,9 +123,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 ENV = os.environ.get("APP_ENV")
-TWITTER_API_KEY = get_setting("TwitterApiKey")
-TWITTER_API_SECRET_KEY = get_setting("TwitterApiSecretKey")
-TWITTER_ACCESS_TOKEN = get_setting("TwitterAccessToken")
-TWITTER_ACCESS_SECRET = get_setting("TwitterAccessSecret")
+TWITTER_API_KEY = "edDWMEB3BsuJLlZn6ZTqJmbcW"
+TWITTER_API_SECRET_KEY = "LAtuP5ypSoD6BGys9l3QLa0FQQNbzVBofwe6nCmLCCIBM5eXid"
+TWITTER_ACCESS_TOKEN = "909198322191278080-TmnyONoUu7QJ5KZo4yw9KDeymaStp5P"
+TWITTER_ACCESS_SECRET = "lG4M9wLd7fS90PzsZERz6hx6bp8ky3F0KVLE1vuViqg8b"
 
 django_heroku.settings(locals())

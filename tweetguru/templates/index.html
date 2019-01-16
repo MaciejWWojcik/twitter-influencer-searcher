@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>Twitter Influencers Searcher</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    {% include 'material/includes/material_css.html' %}
+    {% include 'material/includes/material_js.html' %}
+</head>
+<body>
+{% load material_form %}
+
+<div class="topbar">Twitter Influencers Searcher app</div>
+
+<div class="container">
+    <div class="container__topics column">
+
+        <h5>Step 1. Select topic</h5>
+
+        <form action="{% url 'index' %}" method="POST">
+            {% csrf_token %}
+
+            <label>Input topic</label>
+            <input type="text" name="topic" id="topic">
+
+            <label>or</label>
+
+            <label>Select topic</label>
+            <select name="selectedTopic" class="materialSelect">
+                <option selected="selected"></option>
+                {% for topic in topics %}
+                    <option value="{{ topic.title }}">{{ topic.title }}</option>
+                {% endfor %}
+            </select>
+
+            <h5 class="step2">Step 2. Search for influencers</h5>
+            <button type="submit" value="Search" class="btn">Search</button>
+        </form>
+
+    </div>
+    <div class="container__ranking column">
+
+        <h5>Ranking</h5>
+
+        {% if topic %}
+            <label>Topic: {{ topic }}</label>
+            <label>Tweets searched: {{ tweets }}</label>
+
+            <ul class="ranking__list">
+
+                <li class="ranking__list__item header">
+                    <span class="list__item__avatar"></span>
+                    <span class="list__item__fullName header__label">Full Name</span>
+                    <span class="list__item__nick header__label">Nick</span>
+                </li>
+
+
+                {% for influencer in influencers %}
+                    <li class="ranking__list__item">
+                        <div class="list__item__avatar">
+                            <img src="{{ influencer.avatar }}">
+                        </div>
+                        <span class="list__item__fullName">{{ influencer.fullName }}</span>
+                        <span class="list__item__nick">{{ influencer.nick }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="bottom__bar">
+
+    <div class="info">
+        <label class="topic">Authors:</label>
+        <label>Piotr Mitkowski</label>
+        <label>Mateusz Kiciński</label>
+        <label>Maciej Wójcik</label>
+    </div>
+
+    <div class="info">
+        <label class="topic">Info</label>
+        <label>Project for EZI classes</label>
+        <label>Software Engineering 2019</label>
+        <a href="https://github.com/MaciejWWojcik/twitter-influencer-searcher">Github</a>
+    </div>
+
+</div>
+
+</body>
+</html>

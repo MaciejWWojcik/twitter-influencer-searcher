@@ -9,9 +9,18 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+import configparser
 import os
 import django_heroku
+
+def get_setting(key):
+    current_env = os.environ.get("APP_ENV")
+    if current_env == "production":
+        return os.environ[key]
+    else:
+        config = configparser.ConfigParser()
+        config.read('auth.ini')
+        return config['twitter.com'][key]
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -120,5 +129,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+ENV = os.environ.get("APP_ENV")
+TWITTER_API_KEY = get_setting("TwitterApiKey")
+TWITTER_API_SECRET_KEY = get_setting("TwitterApiSecretKey")
+TWITTER_ACCESS_TOKEN = get_setting("TwitterAccessToken")
+TWITTER_ACCESS_SECRET = get_setting("TwitterAccessSecret")
 
 django_heroku.settings(locals())

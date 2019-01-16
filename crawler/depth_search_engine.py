@@ -1,20 +1,10 @@
-import os
 import json
-from tguru.settings import BASE_DIR
-from crawler.twitter_request_client import getTwitterRequestClient
-from crawler.tweet import Tweet
+import os
 import pathlib
 
-def load_file():
-    tweetFile = open(os.path.join(BASE_DIR, 'tweetguru', 'depth_search', 'sample-tweet.json'))
-    tweet = json.load(tweetFile)
+from crawler.tweet import Tweet
+from crawler.twitter_request_client import getTwitterRequestClient
 
-    tweetFile.close()
-    return tweet
-
-
-def loadFiles():
-    logs = [f for f in os.listdir('../logs/') if os.path.isfile(os.path.join('../tguru/logs/', f))]
 
 class DepthSearchEngine:
     tweets_count = 10
@@ -58,7 +48,7 @@ class DepthSearchEngine:
         for tweet in tweets:
             tweetId = tweet["id"]
             authorId = tweet["user"]["id"]
-            authorDirectoryPath = '../logs/' + tag + "_user_" + str(authorId) + "/"
+            authorDirectoryPath = '../tweets/' + tag + "_user_" + str(authorId) + "/"
             if not os.path.exists(authorDirectoryPath):
                 pathlib.Path(authorDirectoryPath).mkdir(parents=True, exist_ok=True)
             filePath = authorDirectoryPath + tag + '_' + str(tweetId) + '.json'

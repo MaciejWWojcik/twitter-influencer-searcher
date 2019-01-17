@@ -1,14 +1,9 @@
-import configparser
 import oauth2
 
-def getTwitterRequestClient():
-    config = configparser.ConfigParser()
-    config.read('../auth.ini')
-    api_key = config['twitter.com']['ApiKey']
-    api_secret_key = config['twitter.com']['ApiSecretKey']
-    access_token = config['twitter.com']['AccessToken']
-    access_token_secret = config['twitter.com']['AccessTokenSecret']
+from tguru.settings import TWITTER_API_KEY, TWITTER_API_SECRET_KEY, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET
 
-    consumer = oauth2.Consumer(key=api_key, secret=api_secret_key)
-    token = oauth2.Token(key=access_token, secret=access_token_secret)
+
+def getTwitterRequestClient():
+    consumer = oauth2.Consumer(key=TWITTER_API_KEY, secret=TWITTER_API_SECRET_KEY)
+    token = oauth2.Token(key=TWITTER_ACCESS_TOKEN, secret=TWITTER_ACCESS_SECRET)
     return oauth2.Client(consumer, token)

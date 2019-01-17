@@ -48,7 +48,7 @@ class DepthSearchEngine:
         for tweet in tweets:
             tweetId = tweet["id"]
             authorId = tweet["user"]["id"]
-            authorDirectoryPath = '../tweets/' + tag + "_user_" + str(authorId) + "/"
+            authorDirectoryPath = './tweets/' + tag + "_user_" + str(authorId) + "/"
             if not os.path.exists(authorDirectoryPath):
                 pathlib.Path(authorDirectoryPath).mkdir(parents=True, exist_ok=True)
             filePath = authorDirectoryPath + tag + '_' + str(tweetId) + '.json'

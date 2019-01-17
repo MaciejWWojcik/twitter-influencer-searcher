@@ -27,7 +27,9 @@ SECRET_KEY = 'g0pib8vz9ec8v+8+$n63-c@u50qkduq2&*cpdz44nnlcumix0&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "twitter-influencer-project.appspot.com"
+]
 
 
 # Application definition
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'background_task'
 ]
 
 MIDDLEWARE = [
@@ -128,4 +131,3 @@ TWITTER_API_SECRET_KEY = "LAtuP5ypSoD6BGys9l3QLa0FQQNbzVBofwe6nCmLCCIBM5eXid"
 TWITTER_ACCESS_TOKEN = "909198322191278080-TmnyONoUu7QJ5KZo4yw9KDeymaStp5P"
 TWITTER_ACCESS_SECRET = "lG4M9wLd7fS90PzsZERz6hx6bp8ky3F0KVLE1vuViqg8b"
 
-django_heroku.settings(locals())

@@ -1,9 +1,13 @@
 import json
-import os
 
-from crawler.depth_search_engine import DepthSearchEngine
-from crawler.tweet import Tweet
-from crawler.twitter_request_client import getTwitterRequestClient
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tweetguru.settings")
+import django
+django.setup()
+
+from twitter_request_client import getTwitterRequestClient
+from depth_search_engine import DepthSearchEngine
+from tweetguru.models import Tweet
 
 
 def downloadLastWeekTweets(search_query, count):
@@ -16,15 +20,15 @@ def downloadLastWeekTweets(search_query, count):
 def save(content, tag):
     jsonContent = json.loads(content)
     tweets = jsonContent["statuses"]
-    pth = os.path.abspath(os.path.dirname(__file__))
+    # pth = os.path.abspath(os.path.dirname(__file__))
     for tweet in tweets:
-        tweetId = tweet["id"]
-        filePath = pth + '/tweets/' + tag + '_' + str(tweetId) + '.json'
-        file = open(filePath, 'w+')
-        data = Tweet(tweet)
-        file.write(json.dumps(data.toJSON()))
-        file.close()
-        print(data.toJSON())
+        dbTweet = Tweet()
+        dbTweet.tweetId = tweet['id']
+        dbTweet.date = tweet['created_at']
+        dbTweet.text = tweet['text']
+        dbTweet.userId = tweet['user']['id']
+        dbTweet.save()
+        print(dbTweet.toString())
 
 
 # Example of usage

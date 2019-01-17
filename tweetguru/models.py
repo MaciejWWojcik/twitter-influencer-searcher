@@ -15,6 +15,13 @@ class Influencer(models.Model):
     def __str__(self):
         return self.fullName
 
+class InfluencerRank(models.Model):
+        userId = models.CharField(max_length=256, blank=True, null=True)
+        followersCount = models.IntegerField()
+        retweetsCount = models.IntegerField()
+        likesCount = models.IntegerField()
+        mentionsCount = models.IntegerField()
+
 
 class Topic(models.Model):
     title = models.CharField(max_length=256, blank=True, null=True)
@@ -22,3 +29,10 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.title
+
+class Tweet(models.Model):
+    tweetId = models.CharField(max_length=256, blank=True, null=True)
+    date = models.DateField()
+    text = models.CharField(max_length=256, blank=True, null=True)
+    userId = models.CharField(max_length=256, blank=True, null=True)
+

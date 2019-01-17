@@ -5,6 +5,8 @@ from .models import Influencer
 from .models import Topic
 
 from django.http import HttpResponse
+
+
 def index(request):
 
     influencers = Influencer.objects.all()

@@ -16,10 +16,10 @@ def downloadLastWeekTweets(search_query, count):
 def save(content, tag):
     jsonContent = json.loads(content)
     tweets = jsonContent["statuses"]
-
+    pth = os.path.abspath(os.path.dirname(__file__))
     for tweet in tweets:
         tweetId = tweet["id"]
-        filePath = '../logs/' + tag + '_' + str(tweetId) + '.json'
+        filePath = pth + '/tweets/' + tag + '_' + str(tweetId) + '.json'
         file = open(filePath, 'w+')
         data = Tweet(tweet)
         file.write(json.dumps(data.toJSON()))

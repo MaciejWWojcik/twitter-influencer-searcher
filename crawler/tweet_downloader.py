@@ -1,9 +1,8 @@
 import json
-import os
 
 from crawler.depth_search_engine import DepthSearchEngine
-from crawler.tweet import Tweet
 from crawler.twitter_request_client import getTwitterRequestClient
+from tweetguru.models import Tweet, TweetAuthor, Hashtag, UserMention
 
 
 def downloadLastWeekTweets(search_query, count):
@@ -16,15 +15,39 @@ def downloadLastWeekTweets(search_query, count):
 def save(content, tag):
     jsonContent = json.loads(content)
     tweets = jsonContent["statuses"]
-    pth = os.path.abspath(os.path.dirname(__file__))
     for tweet in tweets:
         tweetId = tweet["id"]
-        filePath = pth + '/tweets/' + tag + '_' + str(tweetId) + '.json'
-        file = open(filePath, 'w+')
-        data = Tweet(tweet)
-        file.write(json.dumps(data.toJSON()))
-        file.close()
-        print(data.toJSON())
+
+        existingTweet = Tweet.objects.filter(tweetId=tweetId)
+        if existingTweet is None:
+            tweetUser = tweet['user']
+            existingUser = TweetAuthor.objects.filter(twitterUserId=tweetUser['id'])
+            if existingUser is None:
+                userToSave = TweetAuthor(twitterUserId=tweetUser['id'],
+                                         name=tweetUser['screen_name'],
+                                         fullName=tweetUser['name'],
+                                         followersCount=tweet['followers_count'],
+                                         friendsCount=tweet['friends_count'])
+                userToSave.save()
+                existingUser = userToSave
+            tweetToSave = Tweet(tweetId=tweetId, date=tweet['created_at'], text=tweet['text'], user=existingUser)
+            tweetToSave.save()
+
+            for hashtag in tweet['entities']['hashtags']:
+                hashtagToSave = Hashtag(tweetId=tweetToSave, value=hashtag['text'])
+                hashtagToSave.save()
+            for user in tweet['entities']['user_mentions']:
+                userFromDb = TweetAuthor.objects.filter(twitterUserId=user['id'])
+                if userFromDb is None:
+                    mentionedUserToSave = TweetAuthor(twitterUserId=user['id'],
+                                                      name=user['screen_name'],
+                                                      fullName=user['name'],
+                                                      followersCount=user['followers_count'],
+                                                      friendsCount=user['friends_count'])
+                    mentionedUserToSave.save()
+                    userFromDb = mentionedUserToSave
+                mention = UserMention(tweetId=tweetToSave, userId=userFromDb)
+                mention.save()
 
 
 # Example of usage

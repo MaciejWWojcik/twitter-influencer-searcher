@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.shortcuts import render
+
+from crawler.depth_search_engine import DepthSearchEngine
+from crawler.tweet_downloader import downloadLastWeekTweets, save
 from .models import Influencer
 from .models import Topic
 
@@ -29,3 +32,15 @@ def index(request):
 
     return render(request, 'index.html', context)
 
+
+def interval_fetching(request):
+    topics = Topic.objects.all()
+    amount = 10
+    for topic in topics:
+        topic_name = topic.title
+        content = downloadLastWeekTweets(topic_name, amount)
+        # TODO save to database
+        #save(content, topic_name)
+        #engine = DepthSearchEngine(topic_name, content)
+        #engine.loadAuthorsTweets()
+    return HttpResponse("Fetch finished")

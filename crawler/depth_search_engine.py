@@ -2,8 +2,8 @@ import json
 import os
 import pathlib
 
-from tweet import Tweet
-from twitter_request_client import getTwitterRequestClient
+from crawler.twitter_request_client import getTwitterRequestClient
+from tweetguru.models import Tweet
 
 
 class DepthSearchEngine:

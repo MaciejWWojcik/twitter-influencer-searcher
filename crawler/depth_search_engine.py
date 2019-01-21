@@ -3,6 +3,7 @@ import os
 import pathlib
 
 from crawler.tweet import Tweet
+from crawler.tweet_downloader import save
 from crawler.twitter_request_client import getTwitterRequestClient
 
 
@@ -44,16 +45,5 @@ class DepthSearchEngine:
 
     def saveAuthorsTweets(self, content, tag):
         tweets = json.loads(content)
+        save(tweets, tag)
 
-        for tweet in tweets:
-            tweetId = tweet["id"]
-            authorId = tweet["user"]["id"]
-            authorDirectoryPath = './tweets/' + tag + "_user_" + str(authorId) + "/"
-            if not os.path.exists(authorDirectoryPath):
-                pathlib.Path(authorDirectoryPath).mkdir(parents=True, exist_ok=True)
-            filePath = authorDirectoryPath + tag + '_' + str(tweetId) + '.json'
-            if not os.path.isfile(filePath):
-                file = open(filePath, 'w+')
-                data = Tweet(tweet)
-                file.write(json.dumps(data.toJSON()))
-                file.close()

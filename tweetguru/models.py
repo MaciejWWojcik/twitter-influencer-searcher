@@ -50,3 +50,8 @@ class Hashtag(models.Model):
 class UserMention(models.Model):
     userId = models.ForeignKey(TweetAuthor, on_delete=models.CASCADE)
     tweetId = models.ForeignKey(Tweet, on_delete=models.CASCADE)
+
+
+class SearchResult(models.Model):
+    tag = models.CharField(max_length=2048, blank=True, null=True)
+    tweetId = models.ForeignKey(Tweet, on_delete=models.CASCADE)

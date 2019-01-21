@@ -1,8 +1,7 @@
 import json
 
-from crawler.depth_search_engine import DepthSearchEngine
 from crawler.twitter_request_client import getTwitterRequestClient
-from tweetguru.models import Tweet, TweetAuthor, Hashtag, UserMention
+from tweetguru.models import Tweet, TweetAuthor, Hashtag, UserMention, SearchResult
 
 
 def downloadLastWeekTweets(search_query, count):
@@ -12,55 +11,53 @@ def downloadLastWeekTweets(search_query, count):
     return content
 
 
-def save(content, tag):
-    jsonContent = json.loads(content)
-    tweets = jsonContent["statuses"]
+def save(tweets, tag):
     for tweet in tweets:
         tweetId = tweet["id"]
-        # TODO save tag that was picked to search
-        existingTweet = Tweet.objects.filter(twitterContentId=tweetId)
-        if len(existingTweet) == 0:
+        existingTweet = Tweet.objects.filter(twitterContentId=tweetId).first()
+        if existingTweet is None:
             tweetUser = tweet['user']
-            existingUser = TweetAuthor.objects.filter(twitterUserId=tweetUser['id'])
-            if len(existingUser) == 0:
+            existingUser = TweetAuthor.objects.filter(twitterUserId=tweetUser['id']).first()
+            if existingUser is None:
+
                 userToSave = TweetAuthor(twitterUserId=tweetUser['id'],
                                          name=tweetUser['screen_name'],
-                                         fullName=tweetUser['name'],
+                                         fullName=tweetUser['name'].encode('unicode_escape'),
                                          followersCount=tweetUser['followers_count'],
                                          friendsCount=tweetUser['friends_count'])
-                print(tweetUser['id'])
                 userToSave.save()
                 existingUser = userToSave
-            tweetToSave = Tweet(twitterContentId=tweetId, date=tweet['created_at'], text=tweet['text'], user=existingUser)
+            tweetToSave = Tweet(twitterContentId=tweetId,
+                                date=tweet['created_at'],
+                                text=tweet['text'].encode('unicode_escape'),
+                                user=existingUser)
             tweetToSave.save()
-
+            existingTweet = tweetToSave
             for hashtag in tweet['entities']['hashtags']:
-                hashtagToSave = Hashtag(tweetId=tweetToSave, value=hashtag['text'])
+                hashtagToSave = Hashtag(tweetId=tweetToSave, value=hashtag['text'].encode('unicode_escape'))
                 hashtagToSave.save()
             for user in tweet['entities']['user_mentions']:
-                userFromDb = TweetAuthor.objects.filter(twitterUserId=user['id'])
+                userFromDb = TweetAuthor.objects.filter(twitterUserId=user['id']).first()
                 if userFromDb is None:
-                    mentionedUserToSave = TweetAuthor(twitterUserId=user['id'],
-                                                      name=user['screen_name'],
-                                                      fullName=user['name'],
-                                                      followersCount=user['followers_count'],
-                                                      friendsCount=user['friends_count'])
+                    url = 'https://api.twitter.com/1.1/users/show.json?user_id=' + str(user['id'])
+                    client = getTwitterRequestClient()
+                    resp, content = client.request(url, method="GET")
+                    userDetails = json.loads(content)
+                    mentionedUserToSave = TweetAuthor(twitterUserId=userDetails['id'],
+                                                      name=userDetails['screen_name'],
+                                                      fullName=userDetails['name'].encode('unicode_escape'),
+                                                      followersCount=userDetails['followers_count'],
+                                                      friendsCount=userDetails['friends_count'])
                     mentionedUserToSave.save()
                     userFromDb = mentionedUserToSave
                 mention = UserMention(tweetId=tweetToSave, userId=userFromDb)
                 mention.save()
-
+            existingSearchResult = SearchResult.objects.filter(tweetId_id=existingTweet.id, tag=tag).first()
+            if existingSearchResult is None:
+                searchResultToSave = SearchResult(tweetId_id=existingTweet.id, tag=tag)
+                searchResultToSave.save()
 
 # Example of usage
 # content = downloadLastWeekTweets('tesla',50)
 # search_query is a string
 # count takes values between 1-100
-
-tag = 'tesla'
-amount = 10
-
-content = downloadLastWeekTweets(tag, amount)
-save(content, tag)
-engine = DepthSearchEngine(tag, content)
-engine.loadAuthorsTweets()
-# engine.loadMentionedUsersTweets()

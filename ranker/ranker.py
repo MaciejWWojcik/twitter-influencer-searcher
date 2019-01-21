@@ -1,12 +1,32 @@
-from crawler.tweet import User, Tweet
-from ranker.user_rank import UserRank
+
+from tweetguru.models import TweetAuthor, UserRank, UserMention, Tweet
 
 
-class Ranker:
-    def rank_user(self, phrase, user: User, user_tweets: [Tweet]):
-        retweets_count = 0
-        likes_count = 0
-        for tweet in user_tweets:
-            retweets_count += tweet.retweets_count
-            likes_count += tweet.likes_count
-        return UserRank(phrase, user.id, user.followersCount, user.friendsCount, retweets_count, likes_count, mentions_count)
+def rank_topic(topicId):
+    relevant_tweets = Tweet.objects.filter(topicId=topicId)
+    UserRank.objects.filter(topicId=topicId).delete()
+    for tweet in relevant_tweets:
+        userRank = UserRank.objects.filter(userId=tweet.user, topicId=topicId)
+        if userRank:
+            userRank.tweetsCount += 1
+            userRank.retweetsCount += tweet.retweetsCount
+            userRank.likesCount += tweet.likesCount
+
+        else:
+            userRank = UserRank()
+            userRank.topicId = topicId
+            userRank.userId = tweet.user
+            userRank.followersCount = TweetAuthor.objects.filter(id=tweet.user).followersCount
+            userRank.tweetsCount = 1
+            userRank.retweetsCount = tweet.retweetsCount
+            userRank.likesCount = tweet.likesCount
+            userRank.mentionsCount = 0
+
+        userRank.save()
+        userRank.save()
+
+    mentions = UserMention.objects.filter(topicId=topicId);
+    for mention in mentions:
+        rank = userRank.objects.filter(topicId=topicId, userId=mention.userId)
+        rank.mentionsCount += 1
+        rank.save()

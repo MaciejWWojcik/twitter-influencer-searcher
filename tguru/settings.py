@@ -25,7 +25,8 @@ SECRET_KEY = 'g0pib8vz9ec8v+8+$n63-c@u50qkduq2&*cpdz44nnlcumix0&'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "twitter-influencer-project.appspot.com", "127.0.0.1"
+    "twitter-influencer-project.appspot.com",
+    "127.0.0.1"
 ]
 
 # Application definition

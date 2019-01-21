@@ -7,23 +7,22 @@ from django.shortcuts import render
 
 from crawler.depth_search_engine import DepthSearchEngine
 from crawler.tweet_downloader import downloadLastWeekTweets, save
-from .models import Influencer
-from .models import Topic
+from ranker.ranker import rank_topic
+from .models import Topic, TweetAuthor, Tweet
 
 from django.http import HttpResponse
 
 
 def index(request):
-
-    influencers = Influencer.objects.all()
+    influencers = TweetAuthor.objects.all()
     topics = Topic.objects.all()
 
     topic = ''
-    if(request.method == 'POST'):
+    if (request.method == 'POST'):
         topic = request.POST['topic']
         selectedTopic = request.POST['selectedTopic']
 
-        if(len(selectedTopic)>0):
+        if (len(selectedTopic) > 0):
             topic = selectedTopic
 
     context = {
@@ -48,3 +47,14 @@ def interval_fetching(request):
         engine = DepthSearchEngine(topic_name, content)
         engine.loadAuthorsTweets()
     return HttpResponse("Fetch finished")
+
+
+def ranker(request, topicId):
+    print(request)
+    print('FOO')
+    print(topicId)
+    tweetsBefore = Tweet.objects.filter(id=topicId)
+    rank_topic(topicId)
+    tweetsAfter = Tweet.objects.filter(id=topicId)
+    response = {topicId: topicId, tweetsBefore: tweetsBefore, tweetsAfter: tweetsAfter}
+    return HttpResponse(response)

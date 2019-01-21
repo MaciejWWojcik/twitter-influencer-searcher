@@ -5,6 +5,7 @@ import pathlib
 from crawler.tweet import Tweet
 from crawler.tweet_downloader import save
 from crawler.twitter_request_client import getTwitterRequestClient
+from tweetguru.models import Tweet
 
 
 class DepthSearchEngine:

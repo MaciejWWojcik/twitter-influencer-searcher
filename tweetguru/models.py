@@ -5,20 +5,8 @@ from django.db import models
 
 
 # Create your models here.
-
-class Influencer(models.Model):
-    fullName = models.CharField(max_length=256, blank=True, null=True)
-    nick = models.CharField(max_length=256, blank=True, null=True)
-    avatar = models.CharField(max_length=256, blank=True, null=True)
-    userId = models.CharField(max_length=256, blank=True, null=True)
-
-    def __str__(self):
-        return self.fullName
-
-
 class Topic(models.Model):
     title = models.CharField(max_length=256, blank=True, null=True)
-    topicId = models.CharField(max_length=256, blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -37,6 +25,9 @@ class Tweet(models.Model):
     date = models.CharField(max_length=256, blank=True, null=True)
     text = models.CharField(max_length=256, blank=True, null=True)
     user = models.ForeignKey(TweetAuthor, on_delete=models.CASCADE)
+    topicId = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    retweetsCount = models.IntegerField()
+    likesCount = models.IntegerField()
 
     def __str__(self):
         return self.text
@@ -49,9 +40,20 @@ class Hashtag(models.Model):
 
 class UserMention(models.Model):
     userId = models.ForeignKey(TweetAuthor, on_delete=models.CASCADE)
+    topicId = models.ForeignKey(Topic, on_delete=models.CASCADE)
     tweetId = models.ForeignKey(Tweet, on_delete=models.CASCADE)
 
 
 class SearchResult(models.Model):
     tag = models.CharField(max_length=2048, blank=True, null=True)
     tweetId = models.ForeignKey(Tweet, on_delete=models.CASCADE)
+
+
+class UserRank(models.Model):
+    topicId = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    userId = models.ForeignKey(TweetAuthor, on_delete=models.CASCADE)
+    followersCount = models.IntegerField()
+    tweetsCount = models.IntegerField()
+    retweetsCount = models.IntegerField()
+    likesCount = models.IntegerField()
+    mentionsCount = models.IntegerField()

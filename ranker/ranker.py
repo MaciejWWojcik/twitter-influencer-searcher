@@ -1,11 +1,10 @@
-from crawler.tweet import User, Tweet
 
-from tweetguru.models import TweetAuthor, UserRank, UserMention
+from tweetguru.models import TweetAuthor, UserRank, UserMention, Tweet
 
 
 def rank_topic(topicId):
     relevant_tweets = Tweet.objects.filter(topicId=topicId)
-    UserRank.objects.filter(topicId=topicId).remove();
+    UserRank.objects.filter(topicId=topicId).delete()
     for tweet in relevant_tweets:
         userRank = UserRank.objects.filter(userId=tweet.user, topicId=topicId)
         if userRank:
@@ -23,6 +22,7 @@ def rank_topic(topicId):
             userRank.likesCount = tweet.likesCount
             userRank.mentionsCount = 0
 
+        userRank.save()
         userRank.save()
 
     mentions = UserMention.objects.filter(topicId=topicId);

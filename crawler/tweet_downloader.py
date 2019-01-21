@@ -18,7 +18,7 @@ def save(content, tag):
     for tweet in tweets:
         tweetId = tweet["id"]
 
-        existingTweet = Tweet.objects.filter(tweetId=tweetId)
+        existingTweet = Tweet.objects.filter(id=tweetId)
         if existingTweet is None:
             tweetUser = tweet['user']
             existingUser = TweetAuthor.objects.filter(twitterUserId=tweetUser['id'])

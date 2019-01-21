@@ -55,5 +55,5 @@ class DepthSearchEngine:
             if not os.path.isfile(filePath):
                 file = open(filePath, 'w+')
                 data = Tweet(tweet)
-                file.write(json.dumps(data.toJSON()))
+                # file.write(json.dumps(data.toJSON()))
                 file.close()

@@ -20,7 +20,7 @@ def rank_topic(topicId):
             userRank = UserRank()
             userRank.topicId = topicId
             userRank.userId = tweet.user
-            userRank.followersCount = TweetAuthor.objects.filter(id=tweet.user).followersCount
+            userRank.followersCount = TweetAuthor.objects.filter(id=tweet.user.id).followersCount
             userRank.tweetsCount = 1
             userRank.retweetsCount = tweet.retweetsCount
             userRank.likesCount = tweet.likesCount
@@ -29,8 +29,8 @@ def rank_topic(topicId):
         userRank.save()
         userRank.save()
 
-    mentions = UserMention.objects.filter(topic_id=topicId)
-    for mention in mentions:
-        rank = userRank.objects.filter(topic_id=topicId, user_id=mention.userId)
-        rank.mentionsCount += 1
-        rank.save()
+    # mentions = UserMention.objects.filter(topic_id=topicId)
+    # for mention in mentions:
+    #     rank = userRank.objects.filter(topic_id=topicId, user_id=mention.userId)
+    #     rank.mentionsCount += 1
+    #     rank.save()

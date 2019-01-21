@@ -30,7 +30,9 @@ def save(tweets, tag):
             tweetToSave = Tweet(twitterContentId=tweetId,
                                 date=tweet['created_at'],
                                 text=tweet['text'].encode('unicode_escape'),
-                                user=existingUser)
+                                user=existingUser,
+                                retweetsCount=tweet['retweet_count'],
+                                likesCount=tweet['favorite_count'])
             tweetToSave.save()
             existingTweet = tweetToSave
             for hashtag in tweet['entities']['hashtags']:
@@ -52,9 +54,9 @@ def save(tweets, tag):
                     userFromDb = mentionedUserToSave
                 mention = UserMention(tweet=tweetToSave, user=userFromDb)
                 mention.save()
-            existingSearchResult = SearchResult.objects.filter(tweetId_id=existingTweet.id, tag=tag).first()
+            existingSearchResult = SearchResult.objects.filter(tweet_id=existingTweet.id, tag=tag).first()
             if existingSearchResult is None:
-                searchResultToSave = SearchResult(tweetId_id=existingTweet.id, tag=tag)
+                searchResultToSave = SearchResult(tweet_id=existingTweet.id, tag=tag)
                 searchResultToSave.save()
 
 # Example of usage

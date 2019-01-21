@@ -39,7 +39,6 @@ class Hashtag(models.Model):
 
 class UserMention(models.Model):
     user = models.ForeignKey(TweetAuthor, on_delete=models.CASCADE)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE)
 
 

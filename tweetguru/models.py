@@ -23,7 +23,7 @@ class TweetAuthor(models.Model):
 class Tweet(models.Model):
     twitterContentId = models.BigIntegerField(unique=True)
     date = models.CharField(max_length=256, blank=True, null=True)
-    text = models.CharField(max_length=256, blank=True, null=True)
+    text = models.TextField(null=True)
     user = models.ForeignKey(TweetAuthor, on_delete=models.CASCADE)
     retweetsCount = models.IntegerField()
     likesCount = models.IntegerField()

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+import threading
 
 from django.shortcuts import render
 
@@ -36,6 +37,12 @@ def index(request):
 
 
 def interval_fetching(request):
+    fetch_thread = threading.Thread(target=fetch_tweets,args=())
+    fetch_thread.daemon = True
+    fetch_thread.start()
+    return HttpResponse("Fetch finished")
+
+def fetch_tweets():
     topics = Topic.objects.all()
     amount = 10
     for topic in topics:
@@ -46,7 +53,6 @@ def interval_fetching(request):
         save(tweets, topic_name)
         engine = DepthSearchEngine(topic_name, content)
         engine.loadAuthorsTweets()
-    return HttpResponse("Fetch finished")
 
 
 def ranker(request, topicId):

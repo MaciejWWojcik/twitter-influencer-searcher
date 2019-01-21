@@ -17,20 +17,21 @@ def save(content, tag):
     tweets = jsonContent["statuses"]
     for tweet in tweets:
         tweetId = tweet["id"]
-
-        existingTweet = Tweet.objects.filter(tweetId=tweetId)
-        if existingTweet is None:
+        # TODO save tag that was picked to search
+        existingTweet = Tweet.objects.filter(twitterContentId=tweetId)
+        if len(existingTweet) == 0:
             tweetUser = tweet['user']
             existingUser = TweetAuthor.objects.filter(twitterUserId=tweetUser['id'])
-            if existingUser is None:
+            if len(existingUser) == 0:
                 userToSave = TweetAuthor(twitterUserId=tweetUser['id'],
                                          name=tweetUser['screen_name'],
                                          fullName=tweetUser['name'],
-                                         followersCount=tweet['followers_count'],
-                                         friendsCount=tweet['friends_count'])
+                                         followersCount=tweetUser['followers_count'],
+                                         friendsCount=tweetUser['friends_count'])
+                print(tweetUser['id'])
                 userToSave.save()
                 existingUser = userToSave
-            tweetToSave = Tweet(tweetId=tweetId, date=tweet['created_at'], text=tweet['text'], user=existingUser)
+            tweetToSave = Tweet(twitterContentId=tweetId, date=tweet['created_at'], text=tweet['text'], user=existingUser)
             tweetToSave.save()
 
             for hashtag in tweet['entities']['hashtags']:

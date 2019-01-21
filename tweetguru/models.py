@@ -25,7 +25,7 @@ class Topic(models.Model):
 
 
 class TweetAuthor(models.Model):
-    twitterUserId = models.IntegerField(unique=True)
+    twitterUserId = models.BigIntegerField(unique=True)
     name = models.CharField(max_length=256, blank=True, null=True)
     fullName = models.CharField(max_length=256, blank=True, null=True)
     followersCount = models.IntegerField()
@@ -33,7 +33,7 @@ class TweetAuthor(models.Model):
 
 
 class Tweet(models.Model):
-    twitterContentId = models.IntegerField()
+    twitterContentId = models.BigIntegerField(unique=True)
     date = models.CharField(max_length=256, blank=True, null=True)
     text = models.CharField(max_length=256, blank=True, null=True)
     user = models.ForeignKey(TweetAuthor, on_delete=models.CASCADE)

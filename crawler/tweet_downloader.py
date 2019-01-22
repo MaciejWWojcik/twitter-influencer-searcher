@@ -19,12 +19,12 @@ def save(tweets, tag):
             tweetUser = tweet['user']
             existingUser = TweetAuthor.objects.filter(twitterUserId=tweetUser['id']).first()
             if existingUser is None:
-
                 userToSave = TweetAuthor(twitterUserId=tweetUser['id'],
                                          name=tweetUser['screen_name'],
                                          fullName=tweetUser['name'].encode('unicode_escape'),
                                          followersCount=tweetUser['followers_count'],
-                                         friendsCount=tweetUser['friends_count'])
+                                         friendsCount=tweetUser['friends_count'],
+                                         avatar=tweetUser['profile_image_url'])
                 userToSave.save()
                 existingUser = userToSave
             tweetToSave = Tweet(twitterContentId=tweetId,

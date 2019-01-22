@@ -7,5 +7,6 @@ urlpatterns = [
     url('interval-fetching', views.interval_fetching, name='interval-fetching'),
     url('ranking/', views.index, name='index'),
     path('ranker/<str:topic>/', views.ranker),
-    url('ranker/all/', views.ranker_all)
+    url('ranker-all/', views.ranker_all),
+    url('fix-avatars', views.fix_avatars),
 ]

@@ -18,6 +18,7 @@ class TweetAuthor(models.Model):
     fullName = models.CharField(max_length=256, blank=True, null=True)
     followersCount = models.IntegerField()
     friendsCount = models.IntegerField()
+    avatar = models.CharField(max_length=256, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -59,6 +60,8 @@ class UserRank(models.Model):
     likesCount = models.IntegerField()
     mentionsCount = models.IntegerField()
     score = models.IntegerField()
+    class Meta:
+        unique_together = ["user", "topic"]
 
     def __str__(self):
         return self.topic.title + ' ' + self.user.name

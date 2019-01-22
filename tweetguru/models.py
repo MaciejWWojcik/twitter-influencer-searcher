@@ -19,6 +19,9 @@ class TweetAuthor(models.Model):
     followersCount = models.IntegerField()
     friendsCount = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 
 class Tweet(models.Model):
     twitterContentId = models.BigIntegerField(unique=True)
@@ -55,3 +58,7 @@ class UserRank(models.Model):
     retweetsCount = models.IntegerField()
     likesCount = models.IntegerField()
     mentionsCount = models.IntegerField()
+    score = models.IntegerField()
+
+    def __str__(self):
+        return self.topic.title + ' ' + self.user.name

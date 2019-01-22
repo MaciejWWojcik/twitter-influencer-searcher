@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     url('interval-fetching', views.interval_fetching, name='interval-fetching'),
-    # url('', views.index, name='index'),
-    path('ranker/<int:topicId>/', views.ranker)
+    url('ranking/', views.index, name='index'),
+    path('ranker/<str:topic>/', views.ranker),
+    url('ranker/all/', views.ranker_all)
 ]

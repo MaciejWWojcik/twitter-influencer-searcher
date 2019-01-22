@@ -8,20 +8,25 @@ from django.shortcuts import render
 
 from crawler.depth_search_engine import DepthSearchEngine
 from crawler.tweet_downloader import downloadLastWeekTweets, save
-from ranker.ranker import rank_topic
-from .models import Topic, TweetAuthor, Tweet
+from ranker.ranker import rank_topic, rank_all
+from .models import Topic, TweetAuthor, Tweet, UserRank
 
 from django.http import HttpResponse
 
 
 def index(request):
-    influencers = TweetAuthor.objects.all()
+    influencers = []
     topics = Topic.objects.all()
 
     topic = ''
     if (request.method == 'POST'):
         topic = request.POST['topic']
         selectedTopic = request.POST['selectedTopic']
+        ranks = UserRank.objects.order_by('-score')[:5]
+        for rank in ranks:
+            influencer = TweetAuthor.objects.filter(id=rank.user_id)[0]
+            print(influencer)
+            influencers.append(influencer)
 
         if (len(selectedTopic) > 0):
             topic = selectedTopic
@@ -30,7 +35,7 @@ def index(request):
         'influencers': influencers,
         'topic': topic,
         'topics': topics,
-        'tweets': 215214
+        'tweets': len(Tweet.objects.all())
     }
 
     return render(request, 'index.html', context)
@@ -55,12 +60,10 @@ def fetch_tweets():
         engine.loadAuthorsTweets()
 
 
-def ranker(request, topicId):
-    print(request)
-    print('FOO')
-    print(topicId)
-    tweetsBefore = Tweet.objects.filter(id=topicId)
-    rank_topic(topicId)
-    tweetsAfter = Tweet.objects.filter(id=topicId)
-    response = {topicId: topicId, tweetsBefore: tweetsBefore, tweetsAfter: tweetsAfter}
-    return HttpResponse(response)
+def ranker(request, topic):
+    rank_topic(topic)
+    return HttpResponse(topic)
+
+def ranker_all(request):
+    rank_all()
+    return HttpResponse('all')

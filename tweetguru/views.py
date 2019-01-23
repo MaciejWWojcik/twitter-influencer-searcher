@@ -27,7 +27,7 @@ def index(request):
         filteredTopics = Topic.objects.filter(title=selectedTopic)
         if len(filteredTopics) > 0:
             topicId = filteredTopics[0].id
-            ranks = UserRank.objects.filter(topic_id=topicId).order_by('-score')[:5]
+            ranks = UserRank.objects.filter(topic_id=topicId).order_by('-mentionsCount')[:5]
             for rank in ranks:
                 influencer = TweetAuthor.objects.filter(id=rank.user_id)[0]
                 influencer.fullName = influencer.fullName.split('\'')[1]
